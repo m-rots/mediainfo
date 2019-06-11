@@ -13,7 +13,11 @@ $ npm install --save node-mediainfo
 ## Usage
 
 ```ts
+// Using ES6 imports
 import mediainfo from 'node-mediainfo';
+
+// Using Node.js `require()`
+const mediainfo = require('node-mediainfo');
 
 async function main() {
   const result = await mediainfo('path to media file');

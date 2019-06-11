@@ -26,7 +26,7 @@ async function Init() {
   });
 }
 
-export default async function MediaInfo(path: PathLike): Promise<MediaInfoResponse> {
+export = async function MediaInfo(path: PathLike): Promise<MediaInfoResponse> {
   if (!MediaInfoModule) {
     await Init();
   }
@@ -77,4 +77,4 @@ export default async function MediaInfo(path: PathLike): Promise<MediaInfoRespon
       });
     });
   });
-}
+};
