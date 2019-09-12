@@ -1,5 +1,6 @@
 export type General = {
   '@type': 'General'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
@@ -243,6 +244,7 @@ export type General = {
 
 export type Video = {
   '@type': 'Video'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
@@ -444,6 +446,7 @@ export type Video = {
 
 export type Audio = {
   '@type': 'Audio'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
@@ -511,8 +514,10 @@ export type Audio = {
   Channels_Original: string
   Matrix_Channels: string
   ChannelPositions: string
+  ChannelPositions_Original: string
   Matrix_ChannelPositions: string
   ChannelLayout: string
+  ChannelLayout_Original: string
   ChannelLayoutID: string
   SamplesPerFrame: string
   SamplingRate: string
@@ -580,6 +585,7 @@ export type Audio = {
 
 export type Text = {
   '@type': 'Text'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
@@ -685,6 +691,7 @@ export type Text = {
 
 export type Other = {
   '@type': 'Other'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
@@ -761,6 +768,7 @@ export type Other = {
 
 export type Image = {
   '@type': 'Image'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
@@ -836,6 +844,7 @@ export type Image = {
 
 export type Menu = {
   '@type': 'Menu'
+  [key: string]: string
   Count: string
   Status: string
   StreamCount: string
