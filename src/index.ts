@@ -1,4 +1,5 @@
-import { PathLike, createReadStream, statSync } from 'fs';
+import { PathLike, createReadStream, stat } from 'fs';
+import * as Request from 'request';
 import {
   Audio, General, Image, Menu, Other, Text, Video,
 } from './types';
@@ -26,20 +27,59 @@ async function Init() {
   });
 }
 
-export = async function MediaInfo(path: PathLike): Promise<MediaInfoResponse> {
-  if (!MediaInfoModule) {
-    await Init();
+async function GetSize(path: PathLike, headers = {}) {
+  return new Promise((resolve, reject) => {
+    if (path.toString().indexOf('http') === 0) {
+      return Request({
+        method: 'HEAD',
+        url: path,
+        headers
+      }).on('response', (res) => {
+        resolve(parseInt(res.headers['content-length'], 10) || 0);
+      }).on('error', (err) => {
+        reject(err);
+      })
+    }
+    stat(path, (err, stats) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(stats.size || 0)
+    })
+  })
+}
+
+function GetStream(path: PathLike, start = 0, length = -1, headers = {}) {
+  if (path.toString().indexOf('http') === 0) {
+    return Request({
+      url: path,
+      headers: {
+        ...headers,
+        Range: `bytes=${start}-${length}`
+      }
+    })
   }
-  return new Promise((resolve) => {
-    const stream = createReadStream(path, {
-      highWaterMark: 1024 * 1024,
-    });
-    const { size } = statSync(path);
+  return createReadStream(path, {
+    highWaterMark: length,
+    start,
+  });
+}
+
+export default function MediaInfo(path: PathLike, headers = {}): Promise<MediaInfoResponse> {
+  return new Promise(async (resolve) => {
+
+    if (!MediaInfoModule) {
+      await Init();
+    }
+
+    let seekTo: number;
+
+    const stream = GetStream(path, 0, 1024 * 1024, headers);
+    const size = await GetSize(path);
 
     const MI = new MediaInfoModule.MediaInfo();
     MI.Open_Buffer_Init(size, 0);
 
-    let seekTo: number;
 
     stream.on('data', (chunk) => {
       MI.Open_Buffer_Continue(chunk);
@@ -48,15 +88,14 @@ export = async function MediaInfo(path: PathLike): Promise<MediaInfoResponse> {
 
       if (seekTo !== -1) {
         MI.Open_Buffer_Init(size, seekTo);
-        stream.close();
+        if (stream.close) {
+          stream.close();
+        }
       }
     });
 
     stream.on('close', () => {
-      const newstream = createReadStream(path, {
-        highWaterMark: 1024 * 1024,
-        start: seekTo,
-      });
+      const newstream = GetStream(path, seekTo, 1024 * 1024, headers);
 
       newstream.on('data', (chunk) => {
         MI.Open_Buffer_Continue(chunk);
