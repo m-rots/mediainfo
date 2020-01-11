@@ -5,13 +5,11 @@
 Node implementation of [MediaArea's MediaInfo](https://mediaarea.net/en/MediaInfo) WebAssembly binary.
 
 ## Install
-
 ```sh
 $ npm install --save node-mediainfo
 ```
 
 ## Usage
-
 ```ts
 // Using ES6 imports
 import mediainfo from 'node-mediainfo';
@@ -20,7 +18,7 @@ import mediainfo from 'node-mediainfo';
 const mediainfo = require('node-mediainfo');
 
 async function main() {
-  const result = await mediainfo('path to media file');
+  const result = await mediainfo('<File or URL>');
   console.log(result);
 }
 
@@ -32,6 +30,4 @@ main();
 - Package: [npmjs.com/package/node-mediainfo](https://www.npmjs.com/package/node-mediainfo)
 
 ## License
-
-
 This package uses [MediaInfo](http://mediaarea.net/MediaInfo) library, Copyright (c) 2002-2019 [MediaArea.net SARL](mailto:Info@MediaArea.net)

@@ -26,5 +26,9 @@
     "build": "npm run types && tsc",
     "prepare": "npm run build",
     "types": "tsc --outDir tmp src/build.ts --lib es2017 && node tmp/build"
+  },
+  "dependencies": {
+    "@types/request": "^2.48.4",
+    "request": "^2.88.0"
   }
 }
