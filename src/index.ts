@@ -1,5 +1,5 @@
 import { PathLike, createReadStream, stat } from 'fs';
-import * as Request from 'request';
+import Request = require('request');
 import {
   Audio, General, Image, Menu, Other, Text, Video,
 } from './types';
@@ -32,11 +32,11 @@ async function GetSize(path: PathLike, headers = {}) {
     if (path.toString().indexOf('http') === 0) {
       return Request({
         method: 'HEAD',
-        url: path,
+        url: path.toString(),
         headers
-      }).on('response', (res) => {
+      }).on('response', (res: any) => {
         resolve(parseInt(res.headers['content-length'], 10) || 0);
-      }).on('error', (err) => {
+      }).on('error', (err: Error) => {
         reject(err);
       })
     }
@@ -49,10 +49,10 @@ async function GetSize(path: PathLike, headers = {}) {
   })
 }
 
-function GetStream(path: PathLike, start = 0, length = -1, headers = {}) {
+function GetStream(path: PathLike, start = 0, length = -1, headers = {}): any {
   if (path.toString().indexOf('http') === 0) {
     return Request({
-      url: path,
+      url: path.toString(),
       headers: {
         ...headers,
         Range: `bytes=${start}-${length}`
@@ -81,14 +81,14 @@ export default function MediaInfo(path: PathLike, headers = {}): Promise<MediaIn
     MI.Open_Buffer_Init(size, 0);
 
 
-    stream.on('data', (chunk) => {
+    stream.on('data', (chunk: any) => {
       MI.Open_Buffer_Continue(chunk);
       seekTo = MI.Open_Buffer_Continue_Goto_Get();
       // console.log('SeekTo', seekTo);
 
       if (seekTo !== -1) {
         MI.Open_Buffer_Init(size, seekTo);
-        if (stream.close) {
+        if (typeof (stream.close) !== 'undefined') {
           stream.close();
         }
       }
@@ -97,7 +97,7 @@ export default function MediaInfo(path: PathLike, headers = {}): Promise<MediaIn
     stream.on('close', () => {
       const newstream = GetStream(path, seekTo, 1024 * 1024, headers);
 
-      newstream.on('data', (chunk) => {
+      newstream.on('data', (chunk: any) => {
         MI.Open_Buffer_Continue(chunk);
         seekTo = MI.Open_Buffer_Continue_Goto_Get();
         // console.log('SeekTo', seekTo);

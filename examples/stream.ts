@@ -1,6 +1,6 @@
 import mediainfo from '../src';
 
-mediainfo('<File or URL>').then(
+mediainfo('http://dl5.webmfiles.org/big-buck-bunny_trailer.webm').then(
   (response) => {
     console.log(JSON.stringify(
       response, null, 2,
